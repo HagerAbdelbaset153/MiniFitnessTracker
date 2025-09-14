@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MiniFitnessTracker
 {
-    class Program
+    class FitnessAppEnginecs
     {
-        static void Main(string[] args)
+        public string GetWelcomeMessage()
         {
-            Console.WriteLine();
+            return "Welcome to the Mini Fitness Tracker!";
         }
     }
 }
