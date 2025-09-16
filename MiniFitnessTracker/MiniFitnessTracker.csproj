@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exercise.cs" />
     <Compile Include="FitnessAppEnginecs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="WorkoutPlans.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
