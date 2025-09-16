@@ -12,7 +12,7 @@ namespace MiniFitnessTracker
         public User CurrentUser { get; set; }
 
         public FitnessAppEnginecs()
-        {
+        { 
             Users = new List<User>();
             CurrentUser = null;
         }

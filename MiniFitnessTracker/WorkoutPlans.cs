@@ -21,6 +21,7 @@ namespace MiniFitnessTracker
         {
             Exercises.Add(ex);
             ExerciseDurations[ex] = duration;
+
         }
         public void RemoveExercise(Exercise ex)
         {
