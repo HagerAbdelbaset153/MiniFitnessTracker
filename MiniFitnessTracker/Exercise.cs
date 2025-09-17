@@ -42,6 +42,7 @@ namespace MiniFitnessTracker
             double hours = durationMinutes / 60.0;
             return MET * userWeight * hours;
         }
+
     }
 
 }

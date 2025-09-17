@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Manager.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="FitnessAppEnginecs.cs" />
     <Compile Include="Program.cs" />

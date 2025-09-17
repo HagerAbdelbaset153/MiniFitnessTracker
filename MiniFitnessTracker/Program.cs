@@ -10,6 +10,7 @@ namespace MiniFitnessTracker
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
