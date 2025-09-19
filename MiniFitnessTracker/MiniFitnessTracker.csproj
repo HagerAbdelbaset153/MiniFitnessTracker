@@ -43,16 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="Class2.cs" />
-    <Compile Include="Class3.cs" />
-    <Compile Include="Class4.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="WorkoutPlan.cs" />
+    <Compile Include="Exercise.cs" />
+    <Compile Include="ProgressTracker.cs" />
     <Compile Include="Data Manager.cs" />
     <Compile Include="FitnessAppEnginecs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="screen_user.cs" />
-    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
