@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MiniFitnessTracker
 { 
-    public class workoutPlan
+    public class WorkoutPlan
 
 
     {

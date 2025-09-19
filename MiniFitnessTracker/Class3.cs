@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MiniFitnessTracker
 {
-    public class exercise
+    public class Exercise
     {
         public string Name { get; set; }
         public string Type { get; set; }
