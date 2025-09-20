@@ -1,98 +1,63 @@
 ﻿
+
 using MiniFitnessTracker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp35
-{
-    internal class ProgressTracker
-    {
-        public double WeeklyCalories { get; set; }
-        public double TotalWorkoutTime { get; set; }
-        public List<string> ExerciseStats = new List<string>();
 
+
+namespace MiniFitnessTracker
+{
+    public class ProgressTracker
+    {
         public void Displayweeklystatistics(List<WorkoutPlan> workoutPlans)
         {
-            DateTime OneWeekAgo = DateTime.Now.AddDays(-7);
-
-            ExerciseStats.Clear();
-            WeeklyCalories = 0;
-            TotalWorkoutTime = 0;
-            foreach (var plan in workoutPlans)
+            if (workoutPlans == null || workoutPlans.Count == 0)
             {
-                if (plan.Date >= OneWeekAgo)
-                {
-                    for (int i = 0; i < plan.exercises.Count; i++)
-                    {
-                        var exercise = plan.exercises[i];
-                        var duration = plan.durations[i];
-                        double calories = exercise.caloriesBurnedBasedOnDuration(duration);
-                        WeeklyCalories += calories;
-                        TotalWorkoutTime += duration;
-                        if ((!ExerciseStats.Contains(exercise.Type.ToLower())))
-                        {
-                            ExerciseStats.Add(exercise.Type.ToLower());
-                        }
-                    }
-                }
-
-            }
-            Console.WriteLine("----------------Weekly Statistics--------------");
-            Console.WriteLine($" Total WorkOut Time {TotalWorkoutTime} mins");
-            Console.WriteLine($"Total Calories Burned {WeeklyCalories} cal");
-            Console.WriteLine($"Exercise Type This Week ");
-            foreach (var type in ExerciseStats)
-            {
-                Console.WriteLine(" -" + type);
-            }
-
-
-        }
-        public void DisplayDailyStatistics(List<WorkoutPlan> workoutPlans, DateTime date)
-        {
-            WorkoutPlan dayplan = null;
-            foreach (var plan in workoutPlans)
-            {
-                if (plan.Date.Date == date.Date)
-                {
-                    dayplan = plan;
-                    break;
-                }
-
-            }
-            if (dayplan == null)
-            {
-                Console.WriteLine($"No Workout logged for {date.ToShortDateString()} ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No workout data available.");
+                Console.ResetColor();
                 return;
             }
-            double dailycalories = 0;
-            double dailytime = 0;
-            List<string> ExerciseType = new List<string>();
-            for (int i = 0; i < dayplan.exercises.Count; i++)
-            {
-                var exercise = dayplan.exercises[i];
-                var duration = dayplan.durations[i];
-                double calories = exercise.caloriesBurnedBasedOnDuration(duration);
-                dailycalories += calories;
-                dailytime += duration;
-                if ((!ExerciseType.Contains(exercise.Type.ToLower())))
-                {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n==== Weekly Progress ====");
+            Console.ResetColor();
+            var last7days = workoutPlans
+                .Where(p => (DateTime.Now - p.Date).TotalDays <= 7)
+                .ToList();
 
-                    ExerciseType.Add(exercise.Type.ToLower());
-                }
-            }
-            Console.WriteLine($"------------Daily Statistics for {date.ToShortDateString()}----------");
-            Console.WriteLine($"Total Workout Time {dailytime} mins");
-            Console.WriteLine($" Total Calories Burned  {dailycalories} cal");
-            Console.WriteLine(" Exercise Types");
-            foreach (var type in ExerciseType)
+            if (last7days.Count == 0)
             {
-                Console.WriteLine(" -" + type);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No workouts in the last 7 days.");
+                Console.ResetColor();
+                return;
             }
+
+            foreach (var plan in last7days)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"{plan.Date.ToShortDateString()} - {plan.TotalCaloriesBurned()} calories burned");
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Total calories burned in last 7 days: {last7days.Sum(p => p.TotalCaloriesBurned())}");
         }
+
     }
+
 }
+
+
+
+
+
+
+
+
+
+

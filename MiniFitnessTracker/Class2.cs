@@ -4,38 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MiniFitnessTracker
-{ 
+{
     public class WorkoutPlan
-
-
     {
         public DateTime Date { get; set; }
-        public List<Exercise> exercises = new List<Exercise>();
-        public List<double> durations = new List<double>();
-        public bool AddExercise(Exercise exercise, double duration)
-        {
-            bool valid = true;
-            if (exercise == null)
-            {
-                Console.WriteLine("Exercise cannot be null");
-                valid = false;
-            }
-            if (duration <= 0)
-            {
-                Console.WriteLine("Duration must be positive");
-                valid = false;
-            }
-            if (!valid)
-            {
-                return false;
-            }
-            exercises.Add(exercise);
-            durations.Add(duration);
-            return true;
+        public List<Exercise> Exercises { get; set; } = new List<Exercise>();
+        public List<int> Durations { get; set; } = new List<int>();
 
+        public WorkoutPlan(DateTime date)
+        {
+            Date = date;
         }
 
+        public void AddExercise(Exercise exercise, int duration)
+        {
+            Exercises.Add(exercise);
+            Durations.Add(duration);
+        }
 
+        public int TotalCaloriesBurned()
+        {
+            int total = 0;
+            for (int i = 0; i < Exercises.Count; i++)
+            {
+                total += (int)(Exercises[i].CaloriesBurnedPerMin * Durations[i]);
+            }
+            return total;
+        }
     }
 }
+
+
+
+

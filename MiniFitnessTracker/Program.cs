@@ -1,109 +1,207 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace MiniFitnessTracker
 {
 
-        public class Program
+
+    class ExceptionHandling : Exception
+    {
+        public static int ValidInt(string prompt, int? min = null, int? max = null)
         {
-            public void ShowMenu()
+            int value;
+            while (true)
             {
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine("\n    ==== Mini Fitness Tracker ====");
-                Console.WriteLine("      1. Log Workout      ");
-                Console.WriteLine("      2. View Progress      ");
-                Console.WriteLine("      3. Manage Profile     ");
-                Console.WriteLine("      4. Exit              ");
-                Console.WriteLine("  ==============================");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(prompt);
                 Console.ResetColor();
 
-            }
-            public void LogWorkout()
-            {
-                Console.WriteLine("=== Log Workout ===");
-                Console.Write("Enter exercise name: ");
-                string exercise = Console.ReadLine();
-
-                Console.Write("Enter duration (minutes): ");
-                string durationInput = Console.ReadLine();
-                int duration = int.TryParse(durationInput, out int d) ? d : 0;
-
-                Console.WriteLine($" Workout logged: {exercise} for {duration} minutes.");
-            }
-
-            public void ViewProgress()
-            {
-                Console.WriteLine("=== View Progress ===");
-                Console.WriteLine("Showing dummy progress for now...");
-            }
-
-            public void ManageProfile()
-            {
-                Console.WriteLine("=== Manage Profile ===");
-                Console.WriteLine("Showing dummy profile for now...");
-
-            }
-
-            static void Main(string[] args)
-            {
-
-
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Welcome To Mini Fitness Tracker ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                var s = Console.ReadLine();
                 Console.ResetColor();
-                Program program = new Program();
 
-                while (true)
+                if (int.TryParse(s, out value))
                 {
-                    program.ShowMenu();
-                    Console.Write("Enter your choice :  ");
-                    string input = Console.ReadLine();
-                    if (string.IsNullOrEmpty(input) || !input.All(char.IsDigit))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Please Enter number");
-                        Console.ResetColor();
+                    if ((min == null || value >= min) && (max == null || value <= max))
+                        return value;
 
-                    }
-                    else
-                    {
-                        int choice = int.Parse(input);
-                        switch (choice)
-                        {
-                            case 1:
-                                Console.WriteLine(" 1. Log Workout ");
-                                program.LogWorkout();
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Please enter number between {min} and {max}.");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid input!!..Please enter a number.");
+                    Console.ResetColor();
+                }
+            }
+        }
 
-                                break;
-                            case 2:
-                                Console.WriteLine("2. View Progress ");
+        public static string NonEmptyString(string prompt)
+        {
+            string input;
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(prompt);
+                Console.ResetColor();
 
-                                program.ViewProgress();
-                                break;
-                            case 3:
-                                Console.WriteLine(" 3. Manage Profile  ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                input = Console.ReadLine()?.Trim();
+                Console.ResetColor();
 
-                                program.ManageProfile();
+                if (string.IsNullOrEmpty(input))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Input cannot be empty.");
+                    Console.ResetColor();
+                }
+            } while (string.IsNullOrEmpty(input));
+
+            return input;
+        }
 
 
-                                break;
-                            case 4:
-                                Console.WriteLine(" 4. Exit    ");
+      
+    }
+    public class Program
+    {
 
-                                return;
-                            default:
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Invalid choice, please try again.");
-                                Console.ResetColor();
-                                break;
 
-                        }
+        public static void PrintCentered(string text, ConsoleColor color = ConsoleColor.White)
+        {
+            int windowWidth = Console.WindowWidth;
+            int leftPadding = (windowWidth - text.Length) / 2;
+            if (leftPadding < 0) leftPadding = 0;
 
-                    }
+            Console.ForegroundColor = color;
+            Console.WriteLine(new string(' ', leftPadding) + text);
+            Console.ResetColor();
+        }
+        public static void ThanksHelper()
+        {
+            PrintCentered("===========================================", ConsoleColor.Magenta);
+            PrintCentered("🌟🌟🌟   THANK YOU TEAM HELPERS   🌟🌟🌟", ConsoleColor.Cyan);
+            PrintCentered("💖 Your support means the world to us 💖", ConsoleColor.Green);
+            PrintCentered("🚀 Together, we keep moving forward stronger! 💪", ConsoleColor.Yellow);
+            PrintCentered("===========================================", ConsoleColor.Magenta);
+        }
+
+
+
+        static FitnessAppEngine engine = new FitnessAppEngine();
+
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+             
+           
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+
+            PrintCentered("===========================================", ConsoleColor.Green);
+            PrintCentered("🌟🌟🌟   WELCOME TO MINI FITNESS TRACKER   🌟🌟🌟", ConsoleColor.Yellow);
+            PrintCentered("💪 Stay fit, stay motivated! 💪", ConsoleColor.Yellow);
+            PrintCentered("===========================================", ConsoleColor.Green);
+
+
+            bool exit = false;
+            while (!exit)
+            {
+              Console.ForegroundColor= ConsoleColor.Green;
+                Console.WriteLine("\n==== Main Menu ====");
+                Console.WriteLine("1. Register");
+                Console.WriteLine("2. Login");
+                Console.WriteLine("3. Exit");Console.ResetColor();
+                int choice = ExceptionHandling.ValidInt("Choose option: ", 1, 3);
+                switch (choice)
+                {
+                    case 1:
+                        engine.Register();
+                        break;
+                    case 2:
+                        engine.Login();
+                        if (engine.CurrentUser != null) SubMenu();
+                        break;
+                    case 3:
+                        engine.SaveData();
+                        exit = true;
+                        break;
+                }
+            }
+        }
+
+        static void SubMenu()
+        {
+            bool exitApp = false;
+            while (!exitApp)
+            {
+                Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("====== Mini Fitness Tracker ======");
+                Console.WriteLine("1. Log Workout");
+                Console.WriteLine("2. View Progress");
+                Console.WriteLine("3.CalculateBMI");
+                Console.WriteLine("4.SetGoal");
+                Console.WriteLine("5. Logout");
+                Console.WriteLine("6. Thanks Helper");
+                Console.WriteLine("7. Exit");
+                Console.ResetColor();
+                int choice = ExceptionHandling.ValidInt("Choose an option: ", 1, 7);
+
+                switch (choice)
+                {
+                    case 1:
+                        engine.LogWorkoutMenu();
+                        engine.SaveData();
+                        break;
+                    case 2:
+                        engine.ViewProgress();
+                        break;
+                    case 3:
+                        Console.WriteLine(engine.CurrentUser.CalculateBMI());
+                        Console.WriteLine("Press Enter to return to menu...");
+                        Console.ReadLine();
+                        break;
+                    case 4:
+                        double targetWeight = ExceptionHandling.ValidInt("Enter your target weight (kg): ", 1);
+                        engine.CurrentUser.SetGoal(targetWeight);
+                        Console.WriteLine(engine.CurrentUser.CheckGoalProgress());
+                        Console.WriteLine("Press Enter to return to menu...");
+                        Console.ReadLine();
+                        engine.SaveData();
+                        break;
+                    case 5:
+                        engine.Logout();
+                        return; // يرجع للـ Main Menu
+                    case 6:
+                        PrintCentered("===========================================", ConsoleColor.Magenta);
+                        PrintCentered("🌟🌟🌟   THANK YOU TEAM HELPERS   🌟🌟🌟", ConsoleColor.Yellow);
+                        PrintCentered("🙏💖 Thank you for all your effort and time! 💖", ConsoleColor.Yellow);
+                        PrintCentered("🚀We hope the Helpers family keeps going helping more people , like it helped us ! 💖", ConsoleColor.Yellow);
+                        PrintCentered("===========================================", ConsoleColor.Magenta);
+                        Console.WriteLine("\nPress Enter to return to menu...");
+                        Console.ReadLine(); 
+                        //ThanksHelper();
+                        break;
+
+                    case 7:
+                        engine.SaveData();
+                        exitApp = true;
+                        break;
                 }
             }
         }
     }
+}
+
+
+
+
+
+

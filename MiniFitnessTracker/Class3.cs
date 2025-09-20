@@ -4,60 +4,68 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+
+
 namespace MiniFitnessTracker
 {
+
+    public enum WorkoutCategory
+    {
+        Cardio,
+        Strength,
+        Yoga,
+        Flexibility,
+        WeightLoss,
+        Abs
+    }
+
+
     public class Exercise
     {
         public string Name { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } // Cardio / Strength / Yoga
         public double CaloriesBurnedPerMin { get; set; }
 
-        public bool SetExercise(string name, string type, double caloriesBurnedPerMin) // ميثود مش موجودة فى الكلاس دى بس ممكن نستخدمها لأخذ البيانات من اليوزر والتأكد منها 
+        public Exercise(string name, string type, double caloriesBurnedPerMin)
         {
-            bool valid = true;
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                Console.WriteLine("Name cannot be empty");
-                valid = false;
-            }
-            if (string.IsNullOrWhiteSpace(type))
-            {
-                Console.WriteLine("Type cannot be empty ");
-                valid = false;
-            }
-            if (type != "yoga" && type != "strength" && type != "cardio")
-            {
-                Console.WriteLine("Type must be : Cardio, Strength, or Yoga");
-                valid = false;
-            }
-            if (caloriesBurnedPerMin <= 0)
-            {
-                Console.WriteLine("Calories per minutes must be positive");
-                valid = false;
-            }
-            if (!valid)
-            {
-                return false;
-            }
             Name = name;
             Type = type;
             CaloriesBurnedPerMin = caloriesBurnedPerMin;
-            return true;
         }
-        public double caloriesBurnedBasedOnDuration(double durationInMin)
-        {
-            if (durationInMin <= 0)
-            {
-                Console.WriteLine("duration must be positive");
-                return 0;
-            }
-            return durationInMin * CaloriesBurnedPerMin;
 
-        }
+        public Exercise() { } // عشان نقدر نستخدمها في LogWorkout قبل ما نحدد القيم
 
 
 
 
 
     }
+
+
+
+
+    public static class WorkoutRepository
+    {
+        public static Dictionary<WorkoutCategory, List<string>> Workouts = new Dictionary<WorkoutCategory, List<string>>()
+    {
+        { WorkoutCategory.Cardio, new List<string> { "Running", "Cycling", "Jump Rope" } },
+        { WorkoutCategory.Strength, new List<string> { "Push Ups", "Squats", "Deadlifts" } },
+        { WorkoutCategory.Yoga, new List<string> { "Sun Salutation", "Tree Pose", "Warrior Pose" } },
+        { WorkoutCategory.Flexibility, new List<string> { "Stretching", "Hamstring Stretch", "Shoulder Stretch" } },
+        { WorkoutCategory.WeightLoss, new List<string> { "HIIT", "Burpees", "Mountain Climbers" } },
+        { WorkoutCategory.Abs, new List<string> { "Plank", "Crunches", "Leg Raises" } }
+    };
+
+
+
+
+
+    }
+
+
+
 }
+
+
+

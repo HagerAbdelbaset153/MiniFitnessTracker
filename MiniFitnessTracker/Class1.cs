@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MiniFitnessTracker
 {
     public class user
@@ -15,10 +16,13 @@ namespace MiniFitnessTracker
         public List<WorkoutPlan> workoutPlans { get; set; } = new List<WorkoutPlan>();
         public bool Updateprofile(string name, int age, double height, double weight)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             bool valid = true;
             if (string.IsNullOrWhiteSpace(name))
             {
+               
                 Console.WriteLine("Name cannot be empty");
+              
                 valid = false;
             }
             if (age < 0)

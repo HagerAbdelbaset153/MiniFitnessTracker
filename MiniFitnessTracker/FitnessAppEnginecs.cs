@@ -3,143 +3,209 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace MiniFitnessTracker
 {
-    class FitnessAppEnginecs
+    public class FitnessAppEngine
     {
-        public List<User> Users { get; set; }       
+        public List<User> Users { get; set; }
         public User CurrentUser { get; set; }
+        private Data_Manager dataManager;
 
-        public FitnessAppEnginecs()
-        { 
-            Users = new List<User>();
+        public FitnessAppEngine()
+        {
+            dataManager = new Data_Manager();
+            Users = dataManager.LoadUsers();
             CurrentUser = null;
         }
-        public void ShowMenu()
+
+        public void SaveData()
         {
-            Console.WriteLine("1. View Profile");
-            Console.WriteLine("2. Update Profile");
-            Console.WriteLine("3. Log Workout");
-            Console.WriteLine("4. Show Progress");
-            Console.WriteLine("5. Exit");
+            dataManager.SaveUsers(Users);
         }
-        public void LogWorkout()
+
+        public void Register()
         {
-            WorkoutPlan plan = new WorkoutPlan(DateTime.Now);
-            bool addMore = true;
+            string name = ExceptionHandling.NonEmptyString("Enter name: ");
+            int age = ExceptionHandling.ValidInt("Enter age: ", 1, 100);
+            double weight = ExceptionHandling.ValidInt("Enter weight: ", 20, 300);
+            double height = ExceptionHandling.ValidInt("Enter height (cm): ", 50, 250);
 
-            while (addMore)
+            User user = new User(name, age, weight, height);
+            Users.Add(user);
+            SaveData();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Registration successful!");
+            Console.ResetColor();
+        }
+
+
+
+        public void Login()
+        {
+            if (Users.Count == 0)
             {
-                Console.Write("Enter exercise name: ");
-                string nameExercise = Console.ReadLine();
-                bool invalid = true;
-                while (invalid)
-                {
-                    if (string.IsNullOrWhiteSpace(nameExercise))
-                    {
-                        Console.Write("\nExercise name cannot be empty. Please enter again: ");
-                        nameExercise = Console.ReadLine();
-                    }
-                    if (nameExercise.Any(char.IsDigit))
-                    {
-                        Console.Write("\nExercise name cannot be a number. Please enter again: ");
-                        nameExercise = Console.ReadLine();
-                    }
-                    else
-                    {
-                        invalid = false;
-                    }
-
-                }
-
-                Console.WriteLine("\nSelect exercise type:");
-                Console.WriteLine("1. Cardio");
-                Console.WriteLine("2. Strength");
-                Console.WriteLine("3. Yoga");
-                Console.Write("Enter your choose: ");
-                string typeChoice = Console.ReadLine();
-                ExerciseType exerciseType = new ExerciseType();
-                bool valid = false;
-                while (!valid)
-                {
-                    if (string.IsNullOrWhiteSpace(typeChoice))
-                    {
-                        Console.Write("\nChoice cannot be empty.Please enter again: ");
-                        typeChoice = Console.ReadLine();
-                    }
-                    else
-                    {
-                        switch (typeChoice)
-                        {
-                            case "1":
-                                exerciseType = ExerciseType.Cardio;
-                                valid = true;
-                                break;
-                            case "2":
-                                exerciseType = ExerciseType.Strength;
-                                valid = true;
-                                break;
-                            case "3":
-                                exerciseType = ExerciseType.Yoga;
-                                valid = true;
-                                break;
-                            default:
-                                Console.Write("\nInvalid choose. Please enter again: ");
-                                typeChoice = Console.ReadLine();
-                                break;
-                        }
-                    }
-                }
-
-                Console.Write("\nEnter duration exercise in minutes: ");
-                int duration;
-                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
-                {
-                    Console.Write("\nInvalid duration. Please enter again: ");
-                }
-
-                Exercise exercise = new Exercise(nameExercise, exerciseType);
-
-                plan.AddExercise(exercise, duration);
-
-                Console.Write("\nAdd another exercise? (y/n): ");
-                string ans = Console.ReadLine();
-                while (true)
-                {
-                    if(string.IsNullOrWhiteSpace(ans))
-                    { 
-                        Console.Write("\nAnswer cannot be empty. Please enter again: ");
-                        ans = Console.ReadLine();
-                    }
-                    else if (ans.ToLower() == "y")
-                    {
-                        Console.WriteLine("\n===Exercise details===");
-                        break;
-                    }
-                    else if (ans.ToLower() == "n")
-                    {
-                        addMore = false;
-                        break;
-                    }
-                    else
-                    {
-                        Console.Write("\nInvalid answer. Please enter again: ");
-                        ans = Console.ReadLine();
-                    }
-
-                }
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No users registered yet.");
+                Console.ResetColor();
+                return;
                 
             }
 
-            CurrentUser.WorkoutPlans.Add(plan);
+            string name = ExceptionHandling.NonEmptyString("Enter name: ");
+            CurrentUser = Users.FirstOrDefault(u => u.Name == name);
 
-            /*double totalCalories = plan.CalculateDailyCalories(CurrentUser.Weight);
-            Console.WriteLine($"Total calories burned today: {totalCalories}");*/
+            if (CurrentUser == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("User not found!");
+                Console.ResetColor();
+                return;
+            }
 
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Welcome, {CurrentUser.Name}!");
+            Console.ResetColor();
         }
 
-        
-        
+
+        public void ViewProgress()
+        {
+            if (CurrentUser == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(" Please login first.");
+                Console.ResetColor();
+                return;
+            }
+
+            if (CurrentUser.WorkoutPlans.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($" No workouts logged yet for {CurrentUser.Name}.");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n=== Workout Progress for {CurrentUser.Name} ===");
+            Console.ResetColor();
+
+            int totalCalories = 0;
+            foreach (var plan in CurrentUser.WorkoutPlans)
+            {
+                Console.WriteLine($"\n {plan.Date.ToShortDateString()}");
+                foreach (var exercise in plan.Exercises)
+                {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"   - {exercise.Name} ({exercise.Type}), {exercise.CaloriesBurnedPerMin} cal/min");
+                    totalCalories += (int)exercise.CaloriesBurnedPerMin;
+
+                }
+                    Console.ResetColor();
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n Total Calories Burned: {totalCalories}");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.WriteLine("\nPress Enter to return to menu...");
+            Console.ResetColor();
+            Console.ReadLine();
+        }
+
+
+
+
+
+        public void Logout()
+        {
+            if (CurrentUser == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No user is logged in.");
+                Console.ResetColor();
+                return;
+            }
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Goodbye, {CurrentUser.Name}!");
+            CurrentUser = null;
+            Console.ForegroundColor = ConsoleColor.Green;
+        }
+
+        public void LogWorkoutMenu()
+        {
+            if (CurrentUser == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(" Please login first.");
+                Console.ResetColor();
+                return;
+            }
+
+            bool backToMenu = false;
+
+            while (!backToMenu)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n=== Log Workout Menu ===");
+                Console.WriteLine("Choose a workout category:");
+               
+                int index = 1;
+                foreach (var category in Enum.GetValues(typeof(WorkoutCategory)))
+                {
+                    Console.WriteLine($"{index}. {category}");
+                    index++;
+                }
+                
+                Console.WriteLine($"{index}. Back to Main Menu");
+                
+                int choice = ExceptionHandling.ValidInt("Enter choice: ", 1, index);
+
+                if (choice == index)
+                {
+                    backToMenu = true;
+                    break;
+                }
+
+                WorkoutCategory selectedCategory = (WorkoutCategory)(choice - 1);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\nYou chose {selectedCategory}. Available exercises:");
+
+                List<string> exercises = WorkoutRepository.Workouts[selectedCategory];
+                for (int i = 0; i < exercises.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {exercises[i]}");
+                }
+                Console.WriteLine($"{exercises.Count + 1}. Back to Workout Categories");
+
+                int exChoice = ExceptionHandling.ValidInt("Choose exercise: ", 1, exercises.Count + 1);
+
+                if (exChoice == exercises.Count + 1)
+                {
+                    continue;
+                }
+
+                string chosenExercise = exercises[exChoice - 1];
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\n You logged: {chosenExercise} ({selectedCategory})");
+                Console.ForegroundColor = ConsoleColor.Green;
+
+                int duration = ExceptionHandling.ValidInt("Enter duration in minutes: ", 1, 500);
+
+                Exercise ex = new Exercise(chosenExercise, selectedCategory.ToString(), 5);
+
+                WorkoutPlan plan = new WorkoutPlan(DateTime.Now);
+                plan.AddExercise(ex, duration);
+
+                CurrentUser.WorkoutPlans.Add(plan);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Workout saved!\n");
+                backToMenu = true;
+                Console.ResetColor();
+            }
+        }
     }
 }
+
+
+
