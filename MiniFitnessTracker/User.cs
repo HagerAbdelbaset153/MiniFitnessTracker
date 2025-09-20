@@ -1,19 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 
 namespace MiniFitnessTracker
 {
     public class User
     {
+        public string Name { get; set; }    
         public int Age { get; set; }
         public double Weight { get; set; } // in kg
         public double Height { get; set; } // in cm
-        public List<WorkoutPlan> WorkoutPlans { get; set; }
-        public List<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
+        public List<WorkoutPlan> WorkoutPlans { get; set; }= new List<WorkoutPlan>();
+
 
         public User(string name, int age, double weight, double height)
         {
@@ -21,9 +23,9 @@ namespace MiniFitnessTracker
             Age = age;
             Weight = weight;
             Height = height;
-            WorkoutPlans = new List<WorkoutPlan>();
+           
         }
-        
+
 
 
         public string CalculateBMI()
@@ -39,7 +41,7 @@ namespace MiniFitnessTracker
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             return $"Your BMI is {bmi:F2} ({category})";
-            
+
         }
 
 
@@ -77,12 +79,12 @@ namespace MiniFitnessTracker
             }
             else if (difference > 0)
             {
-                Console.ForegroundColor= ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 return $"You need to lose {difference:F1} kg to reach your goal.";
             }
             else
             {
-                Console.ForegroundColor=ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 return $"Great! You are {Math.Abs(difference):F1} kg under your goal.";
             }
         }
@@ -107,8 +109,7 @@ namespace MiniFitnessTracker
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             return $"Name: {Name}\nAge: {Age}\nWeight: {Weight} kg\nHeight: {Height} cm";
-            
+
         }
     }
 }
-
