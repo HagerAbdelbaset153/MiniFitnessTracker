@@ -57,10 +57,6 @@ namespace MiniFitnessTracker
         { WorkoutCategory.Abs, new List<string> { "Plank", "Crunches", "Leg Raises" } }
     };
 
-
-
-
-
     }
 
 

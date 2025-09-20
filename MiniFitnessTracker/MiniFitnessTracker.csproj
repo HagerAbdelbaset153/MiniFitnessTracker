@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="WorkoutPlan.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="ProgressTracker.cs" />
