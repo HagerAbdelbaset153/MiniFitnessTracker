@@ -7,6 +7,15 @@ A console-based project built with C# to track fitness exercises and calculate c
 - .gitignore — list of files/folders excluded from version control.  
 - .gitattributes — Git attributes settings.  
 
+## 📦 Project Classes
+- Class1.cs (User Class) — calculate BMI, set goal, check goal progress.  
+- DataManager.cs — handles saving, loading, and managing exercise data.  
+- Exercise.cs — defines the base exercise with name, type, and calories burned per minute.  
+- FitnessAppEngines.cs — contains the core logic and engines that run the fitness app.  
+- Program.cs — entry point of the application where execution starts.  
+- ProgressTracker.cs — tracks user progress such as calories burned over time.  
+- WorkoutPlan.cs — manages workout plans and organizes different exercises into routines.  
+
 ## 🚀 How to Run
 1. Clone the repository or download it.  
 2. Open the solution MiniFitnessTracker.sln in Visual Studio or another compatible IDE.  
@@ -15,7 +24,7 @@ A console-based project built with C# to track fitness exercises and calculate c
 `bash
 dotnet run --project MiniFitnessTracker
 
-✨ Future Enhancements : 
+✨ Future Enhancements :
 
 - Persist data (e.g. save exercises) in a file or a database.
 
@@ -26,7 +35,7 @@ dotnet run --project MiniFitnessTracker
 - Add validation (e.g. avoid negative duration or calories).
 
 
-👩‍💻 Contributors
+👩‍💻 Contributors : 
 
 - Hager Abdelbaset
 - Aml Osman
