@@ -1,6 +1,4 @@
-﻿
-
-using MiniFitnessTracker;
+﻿using MiniFitnessTracker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,8 +13,18 @@ namespace MiniFitnessTracker
 {
     public class ProgressTracker
     {
-        public void Displayweeklystatistics(List<WorkoutPlan> workoutPlans)
+        public void Displayweeklystatistics(User currentUser)
         {
+            if (currentUser == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No user logged in.");
+                Console.ResetColor();
+                return;
+            }
+
+            var workoutPlans = currentUser.WorkoutPlans;
+
             if (workoutPlans == null || workoutPlans.Count == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -24,9 +32,11 @@ namespace MiniFitnessTracker
                 Console.ResetColor();
                 return;
             }
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n==== Weekly Progress ====");
             Console.ResetColor();
+
             var last7days = workoutPlans
                 .Where(p => (DateTime.Now - p.Date).TotalDays <= 7)
                 .ToList();
@@ -39,18 +49,25 @@ namespace MiniFitnessTracker
                 return;
             }
 
+            double userWeight = currentUser.Weight;
+            int weeklyTotal = 0;
+
             foreach (var plan in last7days)
             {
+                int dayTotal = plan.TotalCaloriesBurned(userWeight);
+                weeklyTotal += dayTotal;
+
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"{plan.Date.ToShortDateString()} - {plan.TotalCaloriesBurned()} calories burned");
+                Console.WriteLine($"{plan.Date.ToShortDateString()} - {dayTotal} calories burned");
             }
+
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Total calories burned in last 7 days: {last7days.Sum(p => p.TotalCaloriesBurned())}");
+            Console.WriteLine($"Total calories burned in last 7 days: {weeklyTotal}");
+            Console.ResetColor();
         }
-
     }
-
 }
+   
 
 
 

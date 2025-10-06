@@ -146,8 +146,8 @@ namespace MiniFitnessTracker
                 Console.WriteLine("====== Mini Fitness Tracker ======");
                 Console.WriteLine("1. Log Workout");
                 Console.WriteLine("2. View Progress");
-                Console.WriteLine("3.CalculateBMI");
-                Console.WriteLine("4.SetGoal");
+                Console.WriteLine("3. CalculateBMI");
+                Console.WriteLine("4. SetGoal");
                 Console.WriteLine("5. Logout");
                 Console.WriteLine("6. Thanks Helper");
                 Console.WriteLine("7. Exit");

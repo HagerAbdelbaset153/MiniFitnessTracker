@@ -26,6 +26,15 @@ namespace MiniFitnessTracker
         public void Register()
         {
             string name = ExceptionHandling.NonEmptyString("Enter name: ");
+
+            if (Users.Any(u => u.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("This username is already taken. Please choose another name.");
+                Console.ResetColor();
+                return; // نوقف عملية التسجيل
+            }
+
             int age = ExceptionHandling.ValidInt("Enter age: ", 1, 100);
             double weight = ExceptionHandling.ValidInt("Enter weight: ", 20, 300);
             double height = ExceptionHandling.ValidInt("Enter height (cm): ", 50, 250);
@@ -67,53 +76,61 @@ namespace MiniFitnessTracker
             Console.ResetColor();
         }
 
+       
+          public void ViewProgress()
+          {
+              if (CurrentUser == null)
+              {
+                  Console.ForegroundColor = ConsoleColor.Red;
+                  Console.WriteLine(" Please login first.");
+                  Console.ResetColor();
+                  return;
+              }
 
-        public void ViewProgress()
-        {
-            if (CurrentUser == null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(" Please login first.");
-                Console.ResetColor();
-                return;
-            }
+              if (CurrentUser.WorkoutPlans.Count == 0)
+              {
+                  Console.ForegroundColor = ConsoleColor.Yellow;
+                  Console.WriteLine($" No workouts logged yet for {CurrentUser.Name}.");
+                  Console.ResetColor();
+                  return;
+              }
 
-            if (CurrentUser.WorkoutPlans.Count == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($" No workouts logged yet for {CurrentUser.Name}.");
-                Console.ResetColor();
-                return;
-            }
+              Console.ForegroundColor = ConsoleColor.Green;
+              Console.WriteLine($"\n=== Workout Progress for {CurrentUser.Name} ===");
+              Console.ResetColor();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n=== Workout Progress for {CurrentUser.Name} ===");
-            Console.ResetColor();
-
-            int totalCalories = 0;
-            foreach (var plan in CurrentUser.WorkoutPlans)
-            {
+              int totalCalories = 0;
+              double userWeight = CurrentUser.Weight;
+              // ترتيب الخطط حسب التاريخ
+              foreach (var plan in CurrentUser.WorkoutPlans)
+              {
                 Console.WriteLine($"\n {plan.Date.ToShortDateString()}");
-                foreach (var exercise in plan.Exercises)
-                {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"   - {exercise.Name} ({exercise.Type}), {exercise.CaloriesBurnedPerMin} cal/min");
-                    totalCalories += (int)exercise.CaloriesBurnedPerMin;
 
-                }
-                    Console.ResetColor();
-            }
+                  for (int i = 0; i < plan.Exercises.Count; i++)
+                  {
+                    var exercise = plan.Exercises[i];
+                    int duration = plan.Durations[i];
+                    int burned = (int)exercise.CalculateCaloriesBurned(userWeight, duration);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n Total Calories Burned: {totalCalories}");
-            Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"   - {exercise.Name} ({exercise.Type}), Duration: {duration} min, Burned: {burned} cal");
 
-            Console.WriteLine("\nPress Enter to return to menu...");
-            Console.ResetColor();
-            Console.ReadLine();
-        }
+                  }
 
+                totalCalories += plan.TotalCaloriesBurned(userWeight); 
+                Console.ResetColor();
 
+              }
+
+              Console.ForegroundColor = ConsoleColor.Green;
+              Console.WriteLine($"\n Total Calories Burned: {totalCalories}");
+              Console.ForegroundColor = ConsoleColor.Blue;
+
+              Console.WriteLine("\nPress Enter to return to menu...");
+              Console.ResetColor();
+              Console.ReadLine();
+
+          }
 
 
 
@@ -191,12 +208,13 @@ namespace MiniFitnessTracker
                 Console.ForegroundColor = ConsoleColor.Green;
 
                 int duration = ExceptionHandling.ValidInt("Enter duration in minutes: ", 1, 500);
+                
+                Exercise ex = new Exercise(chosenExercise, selectedCategory.ToString());
 
-                Exercise ex = new Exercise(chosenExercise, selectedCategory.ToString(), 5);
 
                 WorkoutPlan plan = new WorkoutPlan(DateTime.Now);
                 plan.AddExercise(ex, duration);
-
+                
                 CurrentUser.WorkoutPlans.Add(plan);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Workout saved!\n");

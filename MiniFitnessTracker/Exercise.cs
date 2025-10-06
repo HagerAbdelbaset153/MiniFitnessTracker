@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-
-
 namespace MiniFitnessTracker
 {
 
@@ -25,25 +23,47 @@ namespace MiniFitnessTracker
     {
         public string Name { get; set; }
         public string Type { get; set; } // Cardio / Strength / Yoga
-        public double CaloriesBurnedPerMin { get; set; }
+        
 
-        public Exercise(string name, string type, double caloriesBurnedPerMin)
+        public Exercise(string name, string type)
         {
             Name = name;
             Type = type;
-            CaloriesBurnedPerMin = caloriesBurnedPerMin;
         }
 
         public Exercise() { } // عشان نقدر نستخدمها في LogWorkout قبل ما نحدد القيم
 
+        //  دالة لحساب السعرات حسب نوع التمرين ووزن المستخدم ومدة التمرين
+        public double CalculateCaloriesBurned(double weight, int duration)
+        {
+            double factor = 0; // نستخدم معامل من قيم MET × 0.0175
 
+            switch (Type.ToLower())
+            {
+                case "cardio":
+                    factor = 0.14;   // MET ~ 8
+                    break;
+                case "strength":
+                    factor = 0.105;  // MET ~ 6
+                    break;
+                case "yoga":
+                    factor = 0.0525; // MET ~ 3
+                    break;
+                case "flexibility":
+                    factor = 0.043;  // MET ~ 2.5
+                    break;
+                case "weightloss":
+                    factor = 0.175;  // MET ~ 10
+                    break;
+                case "abs":
+                    factor = 0.0875; // MET ~ 5
+                    break;
+            }
 
-
-
+            return factor * weight * duration; // المعادلة الأساسية
+        }
     }
-
-
-
+     
 
     public static class WorkoutRepository
     {

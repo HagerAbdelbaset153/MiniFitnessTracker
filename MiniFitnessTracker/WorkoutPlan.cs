@@ -24,14 +24,14 @@ namespace MiniFitnessTracker
             Durations.Add(duration);
         }
 
-        public int TotalCaloriesBurned()
+        public int TotalCaloriesBurned(double userWeight)
         {
-            int total = 0;
+            double total = 0;
             for (int i = 0; i < Exercises.Count; i++)
             {
-                total += (int)(Exercises[i].CaloriesBurnedPerMin * Durations[i]);
+                total += Exercises[i].CalculateCaloriesBurned(userWeight, Durations[i]);
             }
-            return total;
+            return (int)total;
         }
     }
 }
